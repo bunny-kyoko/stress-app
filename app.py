@@ -3,6 +3,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from fpdf import FPDF
 import io
+import tempfile
 
 st.set_page_config(page_title="ストレスチェックアプリ", layout="centered")
 
@@ -65,6 +66,11 @@ if st.button("レポートを作成"):
     plt.savefig(buf, format="png")
     buf.seek(0)
 
+    # 一時ファイルに保存
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+        tmpfile.write(buf.read())
+        tmpfile_path = tmpfile.name
+
     # PDF生成
     pdf = FPDF()
     pdf.add_page()
@@ -80,7 +86,7 @@ if st.button("レポートを作成"):
     for k, v in scores.items():
         pdf.cell(0, 10, f"{k}：{v}点", ln=1)
 
-    pdf.image(buf, x=30, y=None, w=150)
+    pdf.image(tmpfile_path, x=30, y=None, w=150)
 
     # アドバイス
     pdf.set_font("IPA", "", 11)
