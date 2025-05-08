@@ -110,5 +110,5 @@ if st.button("レポートを作成"):
 
     # ダウンロードボタン
     output = io.BytesIO()
-    pdf.output(output)
-    st.download_button("📄 PDFをダウンロード", data=output.getvalue(), file_name="stress_report.pdf", mime="application/pdf")
+    pdf_bytes = pdf.output(dest='S').encode('latin-1')
+    st.download_button("📄 PDFをダウンロード", data=pdf_bytes, file_name="stress_report.pdf", mime="application/pdf")
